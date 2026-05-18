@@ -1,50 +1,51 @@
-# Welcome to your Expo app 👋
+#  ColorVibe - Mobil Renk Atölyesi
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+ColorVibe; kullanıcıların kendi renk kombinasyonlarını tasarlayabildiği, hazır paletleri kategorilerine göre keşfedip favorilerine ekleyebildiği ve güçlü bir yönetim paneli (Admin Panel) üzerinden dinamik olarak yönetilebilen modern bir mobil uygulamadır.
 
-## Get started
+---
 
-1. Install dependencies
+##  Kullanılan Teknolojiler
+
+Projenin geliştirilmesinde aşağıdaki modern teknolojiler ve kütüphaneler kullanılmıştır:
+
+- **Frontend (Mobil):** React Native, Expo (SDK 51/52), TypeScript
+- **Backend & Veritabanı:** Convex (Real-time Cloud Database & Functions)
+- **Yerel Depolama:** AsyncStorage (Favori listesinin telefonda tutulması için)
+- **Arayüz Tasarımı:** Expo Linear Gradient (Gradyan önizlemeleri için), React Native Safe Area Context
+
+---
+
+##  Kurulum ve Çalıştırma Adımları
+
+Projeyi kendi yerel ortamınızda çalıştırmak için aşağıdaki adımları sırasıyla uygulayabilirsiniz:
+
+### 1. Projeyi Klonlayın
+```bash
+git clone [https://github.com/hatice-sen/ColorVibe-Mobil-Renk-Atolyesi.git](https://github.com/hatice-sen/ColorVibe-Mobil-Renk-Atolyesi.git)
+cd ColorVibe-Mobil-Renk-Atolyesi
+
+1. Bağımlılıkları yükleyin
 
    ```bash
    npm install
    ```
+2. Backend (Convex) Sunucusunu Başlatın
+Uygulamanın veritabanı fonksiyonlarının aktif olması için Convex geliştirme sunucusunu çalıştırın:
 
-2. Start the app
+   ```bash
+   npx convex dev
+   ```
+
+4. Projeyi başlatın
 
    ```bash
    npx expo start
+5. Ekran Görüntüleri
+6. <img width="356" height="792" alt="e1" src="https://github.com/user-attachments/assets/8795209b-7f29-42db-9ea4-aab377eadbf1" />
+<img width="357" height="795" alt="e2" src="https://github.com/user-attachments/assets/52f989d1-1571-4fb0-8f0a-44b66b2a0c8c" />
+<img width="357" height="797" alt="e3" src="https://github.com/user-attachments/assets/5ba0c0d6-6da2-4fb8-b7ef-b3e951773c66" />
+<img width="357" height="796" alt="e4" src="https://github.com/user-attachments/assets/1b4c3b0e-cb64-496a-9ff2-dfe2439c9433" />
+<img width="363" height="805" alt="e5" src="https://github.com/user-attachments/assets/b9e07e8c-cac6-425c-8f60-b98e0dc9504e" />
+
    ```
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
