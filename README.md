@@ -41,11 +41,16 @@ Uygulamanın veritabanı fonksiyonlarının aktif olması için Convex geliştir
    ```bash
    npx expo start
 5. Ekran Görüntüleri
-6. <img width="356" height="792" alt="e1" src="https://github.com/user-attachments/assets/8795209b-7f29-42db-9ea4-aab377eadbf1" />
-<img width="357" height="795" alt="e2" src="https://github.com/user-attachments/assets/52f989d1-1571-4fb0-8f0a-44b66b2a0c8c" />
-<img width="357" height="797" alt="e3" src="https://github.com/user-attachments/assets/5ba0c0d6-6da2-4fb8-b7ef-b3e951773c66" />
-<img width="357" height="796" alt="e4" src="https://github.com/user-attachments/assets/1b4c3b0e-cb64-496a-9ff2-dfe2439c9433" />
-<img width="363" height="805" alt="e5" src="https://github.com/user-attachments/assets/b9e07e8c-cac6-425c-8f60-b98e0dc9504e" />
+6. <img width="355" height="793" alt="v1" src="https://github.com/user-attachments/assets/0de36f39-4008-459e-8e90-9ee92730099f" />
+<img width="352" height="792" alt="v2" src="https://github.com/user-attachments/assets/24de1b9a-e2cc-426e-85a8-bbbdd217802c" />
+<img width="352" height="791" alt="v3" src="https://github.com/user-attachments/assets/5c3d111a-c030-4d9e-84dc-ce1ce3c47cab" />
+<img width="355" height="796" alt="v4" src="https://github.com/user-attachments/assets/bcb260e7-7ee9-457b-a946-785ad35acb0e" />
+<img width="347" height="792" alt="v5" src="https://github.com/user-attachments/assets/0f256dde-205a-431a-9951-0f322c66a688" />
+
+
+
+
+
 
    ```
 
