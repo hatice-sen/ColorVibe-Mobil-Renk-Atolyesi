@@ -19,7 +19,7 @@ export default function RootLayout() {
           <View style={{ flex: 1 }}>
             <Slot />
 
-            {/* FOOTER - TAM SENİN İSTEDİĞİN GİBİ */}
+
             <View style={styles.footer}>
               <TouchableOpacity style={styles.tab} onPress={() => router.push('/')}>
                 <Text style={[styles.icon, pathname === '/' && styles.aktif]}>🔍</Text>

@@ -92,15 +92,18 @@ export default function HomeScreen() {
             </View>
 
             <View style={{ height: 60, marginBottom: 15 }}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => setSeciliKategori('Hepsi')} style={[styles.katBtn, seciliKategori === 'Hepsi' && styles.katBtnAktif]}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20,
+                                                                                                       alignItems: 'center' }}>
+                    <TouchableOpacity onPress={() => setSeciliKategori('Hepsi')} style={[styles.katBtn,
+                                                               seciliKategori === 'Hepsi' && styles.katBtnAktif]}>
                         <Text style={[styles.katTxt, seciliKategori === 'Hepsi' && styles.katTxtAktif]}>Hepsi</Text>
                     </TouchableOpacity>
                     {veritabanıKategorileri.map((k: any, i: number) => {
                         const kIsim = k && k.isim ? k.isim : k;
                         if (kIsim === "Hepsi") return null;
                         return (
-                            <TouchableOpacity key={i} onPress={() => setSeciliKategori(kIsim)} style={[styles.katBtn, seciliKategori === kIsim && styles.katBtnAktif]}>
+                            <TouchableOpacity key={i} onPress={() => setSeciliKategori(kIsim)} style={[styles.katBtn,
+                                                                         seciliKategori === kIsim && styles.katBtnAktif]}>
                                 <Text style={[styles.katTxt, seciliKategori === kIsim && styles.katBtnAktif]}>{kIsim}</Text>
                             </TouchableOpacity>
                         );
@@ -170,17 +173,21 @@ const styles = StyleSheet.create({
     katBtnAktif: { backgroundColor: '#111827', elevation: 3 },
     katTxt: { color: '#4B5563', fontWeight: '600', fontSize: 14 },
     katTxtAktif: { color: '#fff' },
-    card: { backgroundColor: '#fff', padding: 20, marginBottom: 25, elevation: 4, shadowOpacity: 0.15, shadowRadius: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, borderRadius: 12, borderWidth: 1, borderColor: '#F3F4F6' },
+    card: { backgroundColor: '#fff', padding: 20, marginBottom: 25, elevation: 4, shadowOpacity: 0.15, shadowRadius: 8,
+         shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, borderRadius: 12, borderWidth: 1, borderColor: '#F3F4F6' },
 
-    // 🚀 Boşlukları Kapatan ve Çizgiyi Diğer Yöne Çeviren Sihirli Stiller:
-    paletteContainer: { width: '100%', height: 240, borderRadius: 8, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB', overflow: 'hidden' },
-    diagonalWrapper: { flexDirection: 'row', width: '200%', height: '200%', transform: [{ rotate: '45deg' }], left: '-50%', top: '-50%', justifyContent: 'center', alignItems: 'center' },
+    paletteContainer: { width: '100%', height: 240, borderRadius: 8, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB',
+         overflow: 'hidden' },
+    diagonalWrapper: { flexDirection: 'row', width: '200%', height: '200%', transform: [{ rotate: '45deg' }],
+                        left: '-50%', top: '-50%', justifyContent: 'center', alignItems: 'center' },
     colorStripe: { flex: 1, height: '100%', marginHorizontal: -0.5 },
 
     cardTitle: { fontSize: 26, textAlign: 'center', color: '#1F2937', marginBottom: 12, fontWeight: '300' },
     codeBox: { backgroundColor: '#F9FAFB', padding: 10, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB' },
     codeText: { textAlign: 'center', color: '#6B7280', fontSize: 12, lineHeight: 18, letterSpacing: 0.5 },
-    favBtn: { alignSelf: 'center', borderWidth: 1, borderColor: '#E5E7EB', paddingHorizontal: 25, paddingVertical: 8, borderRadius: 10, backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', elevation: 2, shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } },
+    favBtn: { alignSelf: 'center', borderWidth: 1, borderColor: '#E5E7EB', paddingHorizontal: 25, paddingVertical: 8,
+              borderRadius: 10, backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', elevation: 2,
+              shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } },
     favBtnAktif: { backgroundColor: '#FFF1F2', borderColor: '#FDA4AF', elevation: 1 },
     favBtnText: { fontWeight: '500', fontSize: 14, marginLeft: 8 },
 });

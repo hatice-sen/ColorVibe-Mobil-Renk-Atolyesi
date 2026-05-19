@@ -10,12 +10,12 @@ export default function Atolyem() {
     const [seciliIndeks, setSeciliIndeks] = useState<number | null>(null);
     const [gecerliRenk, setGecerliRenk] = useState('#6C63FF');
 
-    // 🚀 CONVEX HOOK'LARI
+
     const kayitliPaletler = useQuery(api.renkler.getAtolye);
     const paletEkleMutation = useMutation(api.renkler.ekleAtolye);
     const paletSilMutation = useMutation(api.renkler.silAtolye);
 
-    // 🎨 GELİŞMİŞ GENİŞ RENK PALETİ MATRİSİ (Color Picker için Tonlar)
+
     const COLOR_PICKER_MATRIX = [
         ['#FF7675', '#FAB1A0', '#FFEAA7', '#55E6C1', '#74B9FF', '#A29BFE', '#D288FC'],
         ['#E84393', '#E17055', '#FDCB6E', '#00B894', '#0984E3', '#6C63FF', '#B33771'],
@@ -23,7 +23,7 @@ export default function Atolyem() {
         ['#1A1A1A', '#2D3436', '#636E72', '#B2BEC3', '#DFE6E9', '#FFFFFF', '#ECE0D1']
     ];
 
-    // 💾 CONVEX'E PALET KAYDETME
+
     const paletiEkle = async () => {
         try {
             const saatBilgisi = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
@@ -36,7 +36,7 @@ export default function Atolyem() {
         }
     };
 
-    // 🗑️ CONVEX'TEN PALET SİLME
+
     const paletSil = async (id: any) => {
         try {
             await paletSilMutation({ id });
@@ -45,7 +45,7 @@ export default function Atolyem() {
         }
     };
 
-    // ❌ OLUŞTURDUĞUN PALETTEN RENK SİLME
+
     const renkSil = (index: number) => {
         if (renkler.length > 1) {
             const yeniRenkler = renkler.filter((_, i) => i !== index);
@@ -118,13 +118,13 @@ export default function Atolyem() {
                 </View>
             </ScrollView>
 
-            {/* 🎨 GELİŞMİŞ COLOR PICKER MODAL */}
+
             <Modal visible={modalGorunur} transparent animationType="slide">
                 <Pressable style={stiller.modalOverlay} onPress={() => setModalGorunur(false)}>
                     <View style={stiller.pickerKonteyner}>
                         <Text style={stiller.pickerBaslik}>Renk Seçici</Text>
 
-                        {/* Seçilen Rengin Önizlemesi ve Hex Kodu */}
+
                         <View style={[stiller.onizlemeKutusu, { backgroundColor: gecerliRenk }]}>
                             <Text style={[
                                 stiller.onizlemeYazi,
@@ -134,7 +134,7 @@ export default function Atolyem() {
                             </Text>
                         </View>
 
-                        {/* Geniş Renk Matrisi */}
+
                         <View style={stiller.matrisAlani}>
                             {COLOR_PICKER_MATRIX.map((satir, sIdx) => (
                                 <View key={sIdx} style={stiller.matrisSatiri}>
@@ -153,7 +153,7 @@ export default function Atolyem() {
                             ))}
                         </View>
 
-                        {/* Seçimi Tamamla Butonu */}
+
                         <TouchableOpacity
                             style={stiller.secimiBitirBtn}
                             onPress={() => {

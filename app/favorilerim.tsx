@@ -47,8 +47,6 @@ export default function FavoritesScreen() {
 
                         return (
                             <View style={styles.card}>
-
-                                {/* 🌟 FAVORİLERDE DE KÖŞELERİ TAM KAPATAN SOL ALTTAN SAĞ ÜSTE ÇAPRAZ TASARIM */}
                                 <View style={styles.paletteContainer}>
                                     <View style={styles.diagonalWrapper}>
                                         {renkListesi.map((renk, index) => (
@@ -86,16 +84,20 @@ const styles = StyleSheet.create({
     header: { alignItems: 'center', padding: 30, paddingBottom: 20 },
     title: { fontSize: 36, fontWeight: '300', color: '#1F2937' },
     subtitle: { fontSize: 14, color: '#6B7280', marginTop: 5 },
-    card: { backgroundColor: '#fff', padding: 20, marginBottom: 25, elevation: 4, borderRadius: 12, borderWidth: 1, borderColor: '#F3F4F6' },
+    card: { backgroundColor: '#fff', padding: 20, marginBottom: 25, elevation: 4, borderRadius: 12, borderWidth: 1,
+        borderColor: '#F3F4F6' },
 
-    // Hatayı temizleyen ve tasarımı düzelten yeni stil bloğu
-    paletteContainer: { width: '100%', height: 240, borderRadius: 8, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB', overflow: 'hidden' },
-    diagonalWrapper: { flexDirection: 'row', width: '200%', height: '200%', transform: [{ rotate: '45deg' }], left: '-50%', top: '-50%', justifyContent: 'center', alignItems: 'center' },
+    paletteContainer: { width: '100%', height: 240, borderRadius: 8, marginBottom: 15, borderWidth: 1, borderColor:
+            '#E5E7EB', overflow: 'hidden' },
+    diagonalWrapper: { flexDirection: 'row', width: '200%', height: '200%', transform: [{ rotate: '45deg' }],
+        left: '-50%', top: '-50%', justifyContent: 'center', alignItems: 'center' },
     colorStripe: { flex: 1, height: '100%', marginHorizontal: -0.5 },
 
     cardTitle: { fontSize: 22, textAlign: 'center', color: '#1F2937', marginBottom: 10, fontWeight: '300' },
-    codeBox: { backgroundColor: '#F9FAFB', padding: 8, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB' },
+    codeBox: { backgroundColor: '#F9FAFB', padding: 8, borderRadius: 10, marginBottom: 15, borderWidth: 1,
+        borderColor: '#E5E7EB' },
     codeText: { textAlign: 'center', color: '#6B7280', fontSize: 12 },
-    favBtn: { alignSelf: 'center', borderWidth: 1, borderColor: '#FDA4AF', paddingHorizontal: 20, paddingVertical: 8, borderRadius: 10, backgroundColor: '#FFF1F2', flexDirection: 'row', alignItems: 'center' },
+    favBtn: { alignSelf: 'center', borderWidth: 1, borderColor: '#FDA4AF', paddingHorizontal: 20, paddingVertical: 8,
+        borderRadius: 10, backgroundColor: '#FFF1F2', flexDirection: 'row', alignItems: 'center' },
     favBtnText: { fontWeight: '500', fontSize: 14, marginLeft: 8, color: '#E11D48' },
 });

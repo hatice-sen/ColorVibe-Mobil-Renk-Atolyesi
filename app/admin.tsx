@@ -18,7 +18,7 @@ function AdminPanel() {
 
     const [seciliKategori, setSeciliKategori] = useState('Hepsi');
 
-    // 🚀 CONVEX HOOK'LARI
+
     const mevcutPaletler = useQuery(api.renkler.paletleriGetir);
     const veritabanıKategorileri = useQuery(api.renkler.kategorileriGetir);
 
@@ -140,7 +140,7 @@ function AdminPanel() {
                         <Text style={stiller.baslik}>Admin Panel</Text>
                         <Text style={stiller.altBaslik}>{guncellenenId ? "Mevcut Paleti Düzenle" : "Ana Sayfaya Yeni Renk Grubu Ekle"}</Text>
 
-                        {/* YENİ KATEGORİ EKLEME BÖLÜMÜ */}
+
                         <View style={stiller.form}>
                             <Text style={stiller.ekstraBaslik}>✨ Yeni Kategori Oluştur</Text>
                             <Text style={stiller.etiket}>Kategori Adı:</Text>
@@ -157,7 +157,7 @@ function AdminPanel() {
                             </View>
                         </View>
 
-                        {/* PALET EKLEME / DÜZENLEME FORM BÖLÜMÜ */}
+
                         <View style={stiller.form}>
                             <Text style={stiller.ekstraBaslik}>🎨 {guncellenenId ? "Paleti Düzenle" : "Yeni Renk Paleti Ekle"}</Text>
                             <Text style={stiller.etiket}>Palet İsmi:</Text>
@@ -228,18 +228,20 @@ function AdminPanel() {
                             </View>
                         </View>
 
-                        {/* KATEGORİ FİLTRELEME ÇUBUĞU */}
+
                         <Text style={stiller.listeBaslik}>Sistemde Kayıtlı Hazır Paletler</Text>
                         <View style={{ height: 60, marginBottom: 10 }}>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ alignItems: 'center' }}>
-                                <TouchableOpacity onPress={() => setSeciliKategori('Hepsi')} style={[stiller.katFilterBtn, seciliKategori === 'Hepsi' && stiller.katFilterBtnAktif]}>
+                                <TouchableOpacity onPress={() => setSeciliKategori('Hepsi')} style={[stiller.katFilterBtn,
+                                    seciliKategori === 'Hepsi' && stiller.katFilterBtnAktif]}>
                                     <Text style={[stiller.katFilterTxt, seciliKategori === 'Hepsi' && stiller.katFilterTxtAktif]}>Hepsi</Text>
                                 </TouchableOpacity>
                                 {veritabanıKategorileri.map((k: any, i: number) => {
                                     const kIsim = k && k.isim ? k.isim : k;
                                     if (kIsim === "Hepsi") return null;
                                     return (
-                                        <TouchableOpacity key={i} onPress={() => setSeciliKategori(kIsim)} style={[stiller.katFilterBtn, seciliKategori === kIsim && stiller.katFilterBtnAktif]}>
+                                        <TouchableOpacity key={i} onPress={() => setSeciliKategori(kIsim)} style={[stiller.katFilterBtn,
+                                            seciliKategori === kIsim && stiller.katFilterBtnAktif]}>
                                             <Text style={[stiller.katFilterTxt, seciliKategori === kIsim && stiller.katFilterTxtAktif]}>{kIsim}</Text>
                                         </TouchableOpacity>
                                     );
@@ -279,7 +281,6 @@ function AdminPanel() {
                 }}
             />
 
-            {/* COLOR PICKER MODAL */}
             <Modal visible={modalGorunur} transparent animationType="slide">
                 <Pressable style={stiller.modalOverlay} onPress={() => setModalGorunur(false)}>
                     <View style={stiller.pickerKonteyner}>
@@ -330,7 +331,8 @@ const stiller = StyleSheet.create({
     baslik: { fontSize: 32, fontWeight: 'bold', color: '#000', textAlign: 'center' },
     altBaslik: { fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 25 },
     form: { backgroundColor: '#fff', padding: 20, borderRadius: 20, elevation: 5, marginBottom: 25 },
-    ekstraBaslik: { fontSize: 18, fontWeight: 'bold', color: '#111827', marginBottom: 15, borderBottomWidth: 1, borderBottomColor: '#eee', paddingBottom: 5 },
+    ekstraBaslik: { fontSize: 18, fontWeight: 'bold', color: '#111827', marginBottom: 15, borderBottomWidth: 1,
+        borderBottomColor: '#eee', paddingBottom: 5 },
     etiket: { fontSize: 14, fontWeight: 'bold', marginBottom: 10, color: '#333' },
     input: { borderWidth: 1, borderColor: '#ddd', padding: 12, borderRadius: 10, marginBottom: 20, color: '#000' },
     kategoriSatiri: { flexDirection: 'row', gap: 10, marginBottom: 20, flexWrap: 'wrap' },
@@ -341,7 +343,8 @@ const stiller = StyleSheet.create({
     renkSecimAlani: { flexDirection: 'row', gap: 12, flexWrap: 'wrap', marginBottom: 30, alignItems: 'center' },
     daireKonteyner: { position: 'relative', width: 50, height: 50 },
     renkDaire: { width: '100%', height: '100%', borderRadius: 25, borderWidth: 1, borderColor: '#ccc' },
-    daireSilBtn: { position: 'absolute', top: -4, right: -4, backgroundColor: '#ff7675', width: 18, height: 18, borderRadius: 9, justifyContent: 'center', alignItems: 'center' },
+    daireSilBtn: { position: 'absolute', top: -4, right: -4, backgroundColor: '#ff7675', width: 18, height: 18,
+        borderRadius: 9, justifyContent: 'center', alignItems: 'center' },
     daireSilBtnText: { color: '#fff', fontSize: 12, fontWeight: 'bold', marginTop: -2 },
     artiBtn: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#6C63FF', justifyContent: 'center', alignItems: 'center' },
     kaydetBtn: { backgroundColor: '#000', padding: 16, borderRadius: 12, alignItems: 'center' },
@@ -349,7 +352,8 @@ const stiller = StyleSheet.create({
     iptalBtn: { backgroundColor: '#dc3545', padding: 16, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
     iptalText: { color: '#fff', fontWeight: 'bold' },
     listeBaslik: { fontSize: 22, fontWeight: 'bold', marginBottom: 15, color: '#000' },
-    paletSatiri: { backgroundColor: '#fff', padding: 15, borderRadius: 15, marginBottom: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', elevation: 2 },
+    paletSatiri: { backgroundColor: '#fff', padding: 15, borderRadius: 15, marginBottom: 15, flexDirection: 'row',
+        alignItems: 'center', justifyContent: 'space-between', elevation: 2 },
     adminGradientPreview: { width: '100%', height: 70, borderRadius: 8, marginBottom: 10 },
     paletSatirBaslik: { fontSize: 16, fontWeight: 'bold' },
     paletSatirAlt: { fontSize: 12, color: '#888', marginBottom: 6 },
@@ -368,9 +372,11 @@ const stiller = StyleSheet.create({
     matrisHücre: { width: 40, height: 40, borderRadius: 8 },
     seciliHücre: { borderWidth: 3, borderColor: '#000' },
     secimiBitirBtn: { backgroundColor: '#000', width: '100%', padding: 15, borderRadius: 10, alignItems: 'center' },
-    kategoriEkleBtn: { backgroundColor: '#6C63FF', height: 48, paddingHorizontal: 20, borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
+    kategoriEkleBtn: { backgroundColor: '#6C63FF', height: 48, paddingHorizontal: 20, borderRadius: 10, justifyContent: 'center',
+        alignItems: 'center' },
     kategoriEkleBtnText: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
-    katFilterBtn: { paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, backgroundColor: '#E5E7EB', marginRight: 10, height: 35, justifyContent: 'center' },
+    katFilterBtn: { paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, backgroundColor: '#E5E7EB',
+        marginRight: 10, height: 35, justifyContent: 'center' },
     katFilterBtnAktif: { backgroundColor: '#111827' },
     katFilterTxt: { color: '#4B5563', fontWeight: '600', fontSize: 13 },
     katFilterTxtAktif: { color: '#fff' }
@@ -425,7 +431,8 @@ const kilitEkranStilleri = StyleSheet.create({
     emoji: { fontSize: 40, marginBottom: 15 },
     baslik: { fontSize: 20, fontWeight: 'bold', color: '#111827', marginBottom: 6 },
     aciklama: { fontSize: 13, color: '#6b7280', textAlign: 'center', marginBottom: 25 },
-    girdiAlani: { width: '100%', height: 50, backgroundColor: '#f9fafb', borderWidth: 1, borderColor: '#e5e7eb', borderRadius: 12, paddingHorizontal: 15, fontSize: 18, textAlign: 'center', color: '#111827', marginBottom: 20 },
+    girdiAlani: { width: '100%', height: 50, backgroundColor: '#f9fafb', borderWidth: 1, borderColor: '#e5e7eb',
+         borderRadius: 12, paddingHorizontal: 15, fontSize: 18, textAlign: 'center', color: '#111827', marginBottom: 20 },
     buton: { backgroundColor: '#111827', width: '100%', height: 50, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
     butonMetni: { color: '#fff', fontSize: 15, fontWeight: '600' }
 });

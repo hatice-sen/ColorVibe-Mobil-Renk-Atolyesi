@@ -1,11 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-// ==========================================
-// 🏠 SORGULAR (QUERY)
-// ==========================================
-
-// Tüm paletleri getirir (Keşfet / Ana Sayfa için)
 export const paletleriGetir = query({
     args: {},
     handler: async (ctx) => {
@@ -13,8 +8,7 @@ export const paletleriGetir = query({
     },
 });
 
-// Hatasız Atölye Sorgusu
-// Kullanıcının atölye tablosundaki kendi paletlerini çeker
+
 export const getAtolye = query({
     args: {},
     handler: async (ctx) => {
@@ -22,7 +16,6 @@ export const getAtolye = query({
     },
 });
 
-// Kategorileri veritabanından dinamik olarak çeker
 export const kategorileriGetir = query({
     args: {},
     handler: async (ctx) => {
@@ -34,19 +27,15 @@ export const kategorileriGetir = query({
     },
 });
 
-// ==========================================
-// 🛠️ KULLANICI / ATÖLYE MUTASYONLARI
-// ==========================================
 
-// 🌟 HEM "AD" HEM "TARİH" SESTLERİNİ KABUL EDEN KUSURSUZ SÜRÜM
 export const ekleAtolye = mutation({
     args: {
         ad: v.optional(v.string()),
         renkler: v.array(v.string()),
-        tarih: v.optional(v.string()), // 🚀 İŞTE HATAYI ÇÖZEN SATIR: Frontend'den gelen tarihi kabul ediyoruz
+        tarih: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        // Eğer frontend'den ad gelmediyse o anki saati varsayılan isim yapalım
+
         const simdikiZaman = new Date();
         const saatDinamik = simdikiZaman.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
         const varsayilanIsim = `Atölye Paleti (${saatDinamik})`;
@@ -54,13 +43,12 @@ export const ekleAtolye = mutation({
         return await ctx.db.insert("atolye", {
             ad: args.ad || varsayilanIsim,
             renkler: args.renkler,
-            // Eğer frontend'den gelen bir tarih varsa onu kaydeder, yoksa backend'deki saati yazar
             tarih: args.tarih || saatDinamik,
         });
     },
 });
 
-// 🌟 ARTIK HATA VERMEYEN SİLME MUTASYONU (Frontend'in aradığı isimle birebir aynı)
+
 export const silAtolye = mutation({
     args: {
         id: v.id("atolye"),
@@ -74,11 +62,7 @@ export const silAtolye = mutation({
     },
 });
 
-// ==========================================
-// 🛠️ ADMIN MUTASYONLARI (MUTATION)
-// ==========================================
 
-// Yeni Palet Ekle
 export const paletEkleAdmin = mutation({
     args: {
         ad: v.string(),
@@ -94,7 +78,7 @@ export const paletEkleAdmin = mutation({
     },
 });
 
-// Mevcut Paleti Güncelle
+
 export const paletGuncelleAdmin = mutation({
     args: {
         id: v.id("renkler"),
@@ -115,7 +99,7 @@ export const paletGuncelleAdmin = mutation({
     },
 });
 
-// Palet Sil
+
 export const paletSilAdmin = mutation({
     args: {
         id: v.id("renkler"),
@@ -129,7 +113,7 @@ export const paletSilAdmin = mutation({
     },
 });
 
-// Yeni Kategori Ekle
+
 export const kategoriEkleAdmin = mutation({
     args: {
         isim: v.string(),
