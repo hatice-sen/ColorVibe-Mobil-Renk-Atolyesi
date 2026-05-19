@@ -49,8 +49,3 @@ Uygulamanın veritabanı fonksiyonlarının aktif olması için Convex geliştir
 
 
 
-
-
-
-   ```
-
