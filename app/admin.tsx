@@ -133,7 +133,7 @@ function AdminPanel() {
             <FlatList
                 data={filtrelenmiş}
                 keyExtractor={(item) => item._id}
-                extraData={[mevcutPaletler, renkler, guncellenenId]} // 🌟 Listenin anlık render olmasını tetikler
+                extraData={[mevcutPaletler, renkler, guncellenenId]}
                 contentContainerStyle={stiller.scrollIcerik}
                 ListHeaderComponent={
                     <>
@@ -248,32 +248,35 @@ function AdminPanel() {
                         </View>
                     </>
                 }
-                renderItem={({ item }) => (
-                    <View style={stiller.paletSatiri}>
-                        <View style={{ flex: 1 }}>
-                            <LinearGradient
-                                colors={[item.renkler?.[0] || '#ddd', item.renkler?.[1] || '#999']}
-                                style={stiller.adminGradientPreview}
-                                start={{x:0, y:0}} end={{x:1, y:1}}
-                            />
-                            <Text style={stiller.paletSatirBaslik}>{item.ad}</Text>
-                            <Text style={stiller.paletSatirAlt}>{item.kategori}</Text>
-                            <View style={stiller.kucukRenkOnizleme}>
-                                {item.renkler.map((r: string, i: number) => (
-                                    <View key={i} style={[stiller.kucukKutu, { backgroundColor: r }]} />
-                                ))}
+                renderItem={({ item }) => {
+                    const adminBenzersizKey = `admin-${item._id}-${item.ad}-${item.renkler?.join('-')}`;
+                    return (
+                        <View style={stiller.paletSatiri} key={adminBenzersizKey}>
+                            <View style={{ flex: 1 }}>
+                                <LinearGradient
+                                    colors={item.renkler && item.renkler.length >= 2 ? [item.renkler[0], item.renkler[1]] : ['#ddd', '#999']}
+                                    style={stiller.adminGradientPreview}
+                                    start={{x:0, y:0}} end={{x:1, y:1}}
+                                />
+                                <Text style={stiller.paletSatirBaslik}>{item.ad}</Text>
+                                <Text style={stiller.paletSatirAlt}>{item.kategori}</Text>
+                                <View style={stiller.kucukRenkOnizleme}>
+                                    {item.renkler.map((r: string, i: number) => (
+                                        <View key={i} style={[stiller.kucukKutu, { backgroundColor: r }]} />
+                                    ))}
+                                </View>
+                            </View>
+                            <View style={stiller.aksiyonButonlari}>
+                                <TouchableOpacity style={stiller.duzenleBtn} onPress={() => duzenleModunaAl(item)}>
+                                    <Text style={stiller.btnYazi}>Düzenle</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={stiller.silBtn} onPress={() => paletSil(item._id)}>
+                                    <Text style={stiller.btnYazi}>Sil</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={stiller.aksiyonButonlari}>
-                            <TouchableOpacity style={stiller.duzenleBtn} onPress={() => duzenleModunaAl(item)}>
-                                <Text style={stiller.btnYazi}>Düzenle</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={stiller.silBtn} onPress={() => paletSil(item._id)}>
-                                <Text style={stiller.btnYazi}>Sil</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                )}
+                    );
+                }}
             />
 
             {/* COLOR PICKER MODAL */}

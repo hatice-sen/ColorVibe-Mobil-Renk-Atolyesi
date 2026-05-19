@@ -1,88 +1,101 @@
-import React, { useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FavoriContext } from './_layout';
+import { useIsFocused } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
-const Favorilerim = () => {
-    // Sepetten hem listeyi hem de listeyi güncelleyen fonksiyonu (setFavoriler) aldık
+export default function FavoritesScreen() {
     const { favoriler, setFavoriler } = useContext(FavoriContext);
+    const isFocused = useIsFocused();
 
-    // Favorilerden kaldırma fonksiyonu (Convex ID yapısına göre _id olarak güncellendi)
-    const favoridenKaldir = (id: string) => {
-        const yeniListe = favoriler.filter((p: any) => p._id !== id);
-        setFavoriler(yeniListe);
+    useEffect(() => {
+        if (isFocused) {
+            AsyncStorage.getItem('colorvibe_favs').then(v => {
+                if (v) setFavoriler(JSON.parse(v));
+            });
+        }
+    }, [isFocused]);
+
+    const favoriKaldır = async (id: string) => {
+        const yeniList = favoriler.filter((f: any) => f._id !== id);
+        setFavoriler(yeniList);
+        await AsyncStorage.setItem('colorvibe_favs', JSON.stringify(yeniList));
     };
 
     return (
-        <SafeAreaView style={stiller.container}>
-            <View style={stiller.ustBolum}>
-                <Text style={stiller.anaBaslik}>Favorilerim</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.title}>Favorilerim</Text>
+                <Text style={styles.subtitle}>Kaydettiğin sana özel favori renk paletlerin.</Text>
             </View>
 
             {favoriler.length === 0 ? (
-                <View style={stiller.orta}>
-                    <Text style={{fontSize: 60, marginBottom: 10}}>❤️</Text>
-                    <Text style={{color: '#888', fontSize: 16}}>Henüz favori yok.</Text>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40 }}>
+                    <Text style={{ fontSize: 40, marginBottom: 10 }}>🤍</Text>
+                    <Text style={{ color: '#888', textAlign: 'center' }}>Henüz favorilere eklenmiş bir renk paleti yok.</Text>
                 </View>
             ) : (
                 <FlatList
                     data={favoriler}
-                    keyExtractor={(item) => item._id} // item.id yerine item._id yapıldı
-                    contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 10, paddingBottom: 100 }}
-                    renderItem={({ item }) => (
-                        <View style={stiller.polaroid}>
-                            {/* 🌈 Gradyant buradaki düzeltmeyle artık ana sayfadaki gibi akıcı */}
-                            <LinearGradient
-                                colors={[item.renkler?.[0] || '#ddd', item.renkler?.[1] || '#999']}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 1 }}
-                                style={stiller.renkKutusu}
-                            />
-                            <View style={stiller.kartIcerik}>
-                                <Text style={stiller.paletIsmi}>{item.ad}</Text>
+                    keyExtractor={(item) => item._id}
+                    contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item }) => {
+                        const renkListesi: string[] = Array.isArray(item.renkler) ? item.renkler : ['#ddd', '#999'];
 
-                                <View style={stiller.kodKutusu}>
-                                    <Text style={stiller.kodYazisi}>
-                                        {item.renkler?.[0]}  |  {item.renkler?.[1]}
-                                    </Text>
+                        return (
+                            <View style={styles.card}>
+
+                                {/* 🌟 FAVORİLERDE DE KÖŞELERİ TAM KAPATAN SOL ALTTAN SAĞ ÜSTE ÇAPRAZ TASARIM */}
+                                <View style={styles.paletteContainer}>
+                                    <View style={styles.diagonalWrapper}>
+                                        {renkListesi.map((renk, index) => (
+                                            <View
+                                                key={index}
+                                                style={[
+                                                    styles.colorStripe,
+                                                    { backgroundColor: renk }
+                                                ]}
+                                            />
+                                        ))}
+                                    </View>
                                 </View>
 
-                                {/* İŞTE O BUTON: KALDIRMA BUTONU */}
-                                <TouchableOpacity
-                                    style={stiller.kaldirButon}
-                                    onPress={() => favoridenKaldir(item._id)} // item.id yerine item._id yapıldı
-                                >
-                                    <Text style={stiller.kaldirButonYazisi}>❌ FAVORİLERDEN KALDIR</Text>
+                                <Text style={styles.cardTitle}>{item.ad}</Text>
+                                <View style={styles.codeBox}>
+                                    <Text style={styles.codeText}>{renkListesi.join(' | ')}</Text>
+                                </View>
+
+                                <TouchableOpacity onPress={() => favoriKaldır(item._id)} style={styles.favBtn}>
+                                    <Ionicons name="heart" size={16} color="#E11D48" />
+                                    <Text style={styles.favBtnText}>Favorilerden Kaldır</Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                    )}
+                        );
+                    }}
                 />
             )}
         </SafeAreaView>
     );
-};
+}
 
-const stiller = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#f9f9f9' },
-    ustBolum: { padding: 20, alignItems: "center", backgroundColor: '#fff', borderBottomWidth: 1, borderColor: '#eee' },
-    anaBaslik: { fontSize: 28, fontWeight: 'bold', color: '#1a1a1a' },
-    orta: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    polaroid: { backgroundColor: '#fff', marginVertical: 10, borderRadius: 15, elevation: 5, borderWidth: 1, borderColor: '#eee', overflow: 'hidden' },
-    renkKutusu: { height: 180, width: '100%' },
-    kartIcerik: { padding: 20, alignItems: 'center' },
-    paletIsmi: { fontSize: 20, fontWeight: 'bold', color: '#333' },
-    kodKutusu: { backgroundColor: '#f0f0f0', padding: 8, borderRadius: 5, marginTop: 10, marginBottom: 15, width: '100%', alignItems: 'center' },
-    kodYazisi: { fontSize: 13, color: '#888', letterSpacing: 1, fontWeight: '500' },
-    kaldirButon: {
-        borderWidth: 1,
-        borderColor: '#ff7675',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 20
-    },
-    kaldirButonYazisi: { color: '#ff7675', fontWeight: 'bold', fontSize: 12 }
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: '#F3F4F6' },
+    header: { alignItems: 'center', padding: 30, paddingBottom: 20 },
+    title: { fontSize: 36, fontWeight: '300', color: '#1F2937' },
+    subtitle: { fontSize: 14, color: '#6B7280', marginTop: 5 },
+    card: { backgroundColor: '#fff', padding: 20, marginBottom: 25, elevation: 4, borderRadius: 12, borderWidth: 1, borderColor: '#F3F4F6' },
+
+    // Hatayı temizleyen ve tasarımı düzelten yeni stil bloğu
+    paletteContainer: { width: '100%', height: 240, borderRadius: 8, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB', overflow: 'hidden' },
+    diagonalWrapper: { flexDirection: 'row', width: '200%', height: '200%', transform: [{ rotate: '45deg' }], left: '-50%', top: '-50%', justifyContent: 'center', alignItems: 'center' },
+    colorStripe: { flex: 1, height: '100%', marginHorizontal: -0.5 },
+
+    cardTitle: { fontSize: 22, textAlign: 'center', color: '#1F2937', marginBottom: 10, fontWeight: '300' },
+    codeBox: { backgroundColor: '#F9FAFB', padding: 8, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB' },
+    codeText: { textAlign: 'center', color: '#6B7280', fontSize: 12 },
+    favBtn: { alignSelf: 'center', borderWidth: 1, borderColor: '#FDA4AF', paddingHorizontal: 20, paddingVertical: 8, borderRadius: 10, backgroundColor: '#FFF1F2', flexDirection: 'row', alignItems: 'center' },
+    favBtnText: { fontWeight: '500', fontSize: 14, marginLeft: 8, color: '#E11D48' },
 });
-
-export default Favorilerim;

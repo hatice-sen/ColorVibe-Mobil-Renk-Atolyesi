@@ -1,47 +1,73 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FavoriContext } from './_layout';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { useIsFocused } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
     const { favoriler, setFavoriler } = useContext(FavoriContext);
     const [seciliKategori, setSeciliKategori] = useState('Hepsi');
+    const [refreshing, setRefreshing] = useState(false);
+    const isFocused = useIsFocused();
 
     const veritabanıKategorileri = useQuery(api.renkler.kategorileriGetir);
     const hazırPaletler = useQuery(api.renkler.paletleriGetir);
 
-    // HAFIZADAN ÇEK
     useEffect(() => {
-        AsyncStorage.getItem('colorvibe_favs').then(v => {
-            if (v) setFavoriler(JSON.parse(v));
-        });
-    }, []);
+        if (isFocused) {
+            AsyncStorage.getItem('colorvibe_favs').then(v => {
+                if (v) setFavoriler(JSON.parse(v));
+            });
+        }
+    }, [isFocused]);
 
-    // 🌟 KURŞUN GEÇİRMEZ TEMİZLİK MEKANİZMASI:
-    // Veritabanından gelen paletler her güncellendiğinde favorileri kontrol et.
-    // Eğer favorilerdeki bir palet artık veritabanında (hazırPaletler içinde) YOKSA, onu otomatik olarak sil!
     useEffect(() => {
         if (hazırPaletler && hazırPaletler.length > 0 && favoriler.length > 0) {
-            // Sadece hala veritabanında var olan paletleri filtrele
-            const gecerliFavoriler = favoriler.filter((fav: any) =>
-                hazırPaletler.some((dbPalet: any) => dbPalet._id === fav._id)
-            );
+            let degisiklikVarMi = false;
 
-            // Eğer silinmiş bir palet bulunduysa, listeyi güncelle ve yerel hafızayı eşitle
-            if (gecerliFavoriler.length !== favoriler.length) {
-                setFavoriler(gecerliFavoriler);
-                AsyncStorage.setItem('colorvibe_favs', JSON.stringify(gecerliFavoriler));
+            const gecerliVeGuncelFavoriler = favoriler
+                .map((fav: any) => {
+                    const dbHali = hazırPaletler.find((dbPalet: any) => dbPalet._id === fav._id);
+                    if (!dbHali) {
+                        degisiklikVarMi = true;
+                        return null;
+                    }
+                    if (JSON.stringify(dbHali) !== JSON.stringify(fav)) {
+                        degisiklikVarMi = true;
+                        return dbHali;
+                    }
+                    return fav;
+                })
+                .filter(Boolean);
+
+            if (degisiklikVarMi) {
+                setFavoriler(gecerliVeGuncelFavoriler);
+                AsyncStorage.setItem('colorvibe_favs', JSON.stringify(gecerliVeGuncelFavoriler));
             }
         }
-    }, [hazırPaletler]);
+    }, [hazırPaletler, isFocused]);
 
-    if (!hazırPaletler || !veritabanıKategorileri) return null;
+    const handleRefresh = () => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    };
 
-    // FAVORİ EKLEME
+    if (!hazırPaletler || !veritabanıKategorileri) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <ActivityIndicator size="large" color="#4B5563" />
+                </View>
+            </SafeAreaView>
+        );
+    }
+
     const favoriyeEkle = async (palet: any) => {
         const varMi = favoriler.find((f: any) => f._id === palet._id);
         let yeniList;
@@ -60,14 +86,12 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* BAŞLIK */}
             <View style={styles.header}>
                 <Text style={styles.title}>ColorVibe</Text>
                 <Text style={styles.subtitle}>Ruhunu yansıtan renk kombinasyonlarını keşfet, yönet ve tasarla.</Text>
             </View>
 
-            {/* KATEGORİLER */}
-            <View style={{ height: 60 }}>
+            <View style={{ height: 60, marginBottom: 15 }}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => setSeciliKategori('Hepsi')} style={[styles.katBtn, seciliKategori === 'Hepsi' && styles.katBtnAktif]}>
                         <Text style={[styles.katTxt, seciliKategori === 'Hepsi' && styles.katTxtAktif]}>Hepsi</Text>
@@ -77,37 +101,57 @@ export default function HomeScreen() {
                         if (kIsim === "Hepsi") return null;
                         return (
                             <TouchableOpacity key={i} onPress={() => setSeciliKategori(kIsim)} style={[styles.katBtn, seciliKategori === kIsim && styles.katBtnAktif]}>
-                                <Text style={[styles.katTxt, seciliKategori === kIsim && styles.katTxtAktif]}>{kIsim}</Text>
+                                <Text style={[styles.katTxt, seciliKategori === kIsim && styles.katBtnAktif]}>{kIsim}</Text>
                             </TouchableOpacity>
                         );
                     })}
                 </ScrollView>
             </View>
 
-            {/* PALET LİSTESİ */}
             <FlatList
                 data={filtrelenmiş}
                 keyExtractor={(item) => item._id}
-                extraData={[hazırPaletler, favoriler]} // Hem veritabanı hem favori değişimlerini izle
+                extraData={[hazırPaletler, favoriler, isFocused, seciliKategori, refreshing]}
                 contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => {
                     const favMi = favoriler.some((f: any) => f._id === item._id);
+                    const benzersizKey = `${item._id}-${item.ad}-${item.renkler?.join('-')}-${refreshing}`;
+
+                    const renkListesi: string[] = Array.isArray(item.renkler) && item.renkler.length > 0
+                        ? item.renkler
+                        : ['#ddd', '#999'];
+
                     return (
-                        <View style={styles.card}>
-                            <LinearGradient
-                                colors={[item.renkler?.[0] || '#ddd', item.renkler?.[1] || '#999']}
-                                style={styles.gradient}
-                                start={{x:0, y:0}} end={{x:1, y:1}}
-                            />
+                        <View style={styles.card} key={benzersizKey}>
+
+                            {/* 🌟 KÖŞELERİ BOŞ KALMAYAN DİĞER TARAFA ÇAPRAZ YENİ TASARIM */}
+                            <View style={styles.paletteContainer}>
+                                <View style={styles.diagonalWrapper}>
+                                    {renkListesi.map((renk, index) => (
+                                        <View
+                                            key={index}
+                                            style={[
+                                                styles.colorStripe,
+                                                { backgroundColor: renk }
+                                            ]}
+                                        />
+                                    ))}
+                                </View>
+                            </View>
 
                             <Text style={styles.cardTitle}>{item.ad}</Text>
                             <View style={styles.codeBox}>
-                                <Text style={styles.codeText}>{item.renkler?.join(' | ')}</Text>
+                                <Text style={styles.codeText}>{renkListesi.join(' | ')}</Text>
                             </View>
 
-                            {/* FAVORİ BUTONU */}
                             <TouchableOpacity onPress={() => favoriyeEkle(item)} style={[styles.favBtn, favMi && styles.favBtnAktif]}>
-                                <Text style={{color: favMi ? '#E11D48' : '#374151', fontWeight: '500'}}>{favMi ? "💗 Favori" : "🤍 Favori"}</Text>
+                                <Ionicons name={favMi ? "heart" : "heart-outline"} size={16} color={favMi ? '#E11D48' : '#374151'} />
+                                <Text style={[styles.favBtnText, {color: favMi ? '#E11D48' : '#374151' }]}>
+                                    Favori
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     );
@@ -119,18 +163,24 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#F3F4F6' },
-    header: { alignItems: 'center', padding: 30 },
-    title: { fontSize: 42, fontWeight: '300', color: '#222' },
-    subtitle: { fontSize: 14, color: '#888', textAlign: 'center', marginTop: 5 },
-    katBtn: { paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, backgroundColor: '#E5E7EB', marginRight: 10 },
-    katBtnAktif: { backgroundColor: '#111827' },
-    katTxt: { color: '#4B5563', fontWeight: '600' },
+    header: { alignItems: 'center', padding: 30, paddingBottom: 20 },
+    title: { fontSize: 48, fontWeight: '300', color: '#1F2937', letterSpacing: 1 },
+    subtitle: { fontSize: 16, color: '#6B7280', textAlign: 'center', marginTop: 10, lineHeight: 22, paddingHorizontal: 15 },
+    katBtn: { paddingHorizontal: 18, paddingVertical: 10, borderRadius: 25, backgroundColor: '#E5E7EB', marginRight: 12, elevation: 1 },
+    katBtnAktif: { backgroundColor: '#111827', elevation: 3 },
+    katTxt: { color: '#4B5563', fontWeight: '600', fontSize: 14 },
     katTxtAktif: { color: '#fff' },
-    card: { backgroundColor: '#fff', padding: 15, marginBottom: 20, elevation: 2, shadowOpacity: 0.1, shadowRadius: 5 },
-    gradient: { width: '100%', height: 200, borderRadius: 4, marginBottom: 15 },
-    cardTitle: { fontSize: 22, textAlign: 'center', color: '#333', marginBottom: 10, fontWeight: '300' },
-    codeBox: { backgroundColor: '#F3F4F6', padding: 8, borderRadius: 8, marginBottom: 10 },
-    codeText: { textAlign: 'center', color: '#6B7280', fontSize: 11 },
-    favBtn: { alignSelf: 'center', borderWidth: 1, borderColor: '#ddd', paddingHorizontal: 20, paddingVertical: 6, borderRadius: 8, backgroundColor: '#fff' },
-    favBtnAktif: { backgroundColor: '#FFF1F2', borderColor: '#FDA4AF' }
+    card: { backgroundColor: '#fff', padding: 20, marginBottom: 25, elevation: 4, shadowOpacity: 0.15, shadowRadius: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, borderRadius: 12, borderWidth: 1, borderColor: '#F3F4F6' },
+
+    // 🚀 Boşlukları Kapatan ve Çizgiyi Diğer Yöne Çeviren Sihirli Stiller:
+    paletteContainer: { width: '100%', height: 240, borderRadius: 8, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB', overflow: 'hidden' },
+    diagonalWrapper: { flexDirection: 'row', width: '200%', height: '200%', transform: [{ rotate: '45deg' }], left: '-50%', top: '-50%', justifyContent: 'center', alignItems: 'center' },
+    colorStripe: { flex: 1, height: '100%', marginHorizontal: -0.5 },
+
+    cardTitle: { fontSize: 26, textAlign: 'center', color: '#1F2937', marginBottom: 12, fontWeight: '300' },
+    codeBox: { backgroundColor: '#F9FAFB', padding: 10, borderRadius: 10, marginBottom: 15, borderWidth: 1, borderColor: '#E5E7EB' },
+    codeText: { textAlign: 'center', color: '#6B7280', fontSize: 12, lineHeight: 18, letterSpacing: 0.5 },
+    favBtn: { alignSelf: 'center', borderWidth: 1, borderColor: '#E5E7EB', paddingHorizontal: 25, paddingVertical: 8, borderRadius: 10, backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', elevation: 2, shadowOpacity: 0.1, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } },
+    favBtnAktif: { backgroundColor: '#FFF1F2', borderColor: '#FDA4AF', elevation: 1 },
+    favBtnText: { fontWeight: '500', fontSize: 14, marginLeft: 8 },
 });
